@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import coracao from "./img/coracao.png";
 
-// Função para gerar cores aleatórias por usuário
 const cores = [
   "bg-red-500", "bg-green-500", "bg-blue-500",
   "bg-yellow-500", "bg-purple-500", "bg-pink-500", "bg-orange-500"
@@ -15,6 +14,7 @@ function App() {
   const [mensagem, setMensagem] = useState("");
   const [mensagens, setMensagens] = useState([]);
   const [coresUsuarios, setCoresUsuarios] = useState({});
+  const [erro, setErro] = useState(""); // <- estado de erro
 
   const abrirModal = () => setModalAberto(true);
   const fecharModal = () => {
@@ -25,11 +25,10 @@ function App() {
   const adicionarUsuario = () => {
     if (novoUsuario.trim() === "") return;
     setUsuarios([...usuarios, novoUsuario.trim()]);
-    
-    // Atribui cor aleatória ao usuário
+
     if (!coresUsuarios[novoUsuario.trim()]) {
       const corAleatoria = cores[Math.floor(Math.random() * cores.length)];
-      setCoresUsuarios({...coresUsuarios, [novoUsuario.trim()]: corAleatoria});
+      setCoresUsuarios({ ...coresUsuarios, [novoUsuario.trim()]: corAleatoria });
     }
 
     setNovoUsuario("");
@@ -37,25 +36,34 @@ function App() {
   };
 
   const enviarMensagem = () => {
-    if (!usuarioSelecionado || mensagem.trim() === "") return;
+    if (!usuarioSelecionado) {
+      setErro("Selecione um usuário antes de enviar.");
+      return;
+    }
+    if (mensagem.trim() === "") {
+      setErro("Digite uma mensagem antes de enviar.");
+      return;
+    }
+
     const agora = new Date();
-    const hora = agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    
+    const hora = agora.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
     setMensagens([
       ...mensagens,
       { usuario: usuarioSelecionado, texto: mensagem.trim(), hora }
     ]);
     setMensagem("");
+    setErro(""); // limpar erro
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w bg-white shadow-lg rounded-lg flex flex-col h-[80vh]">
 
-        {/* Cabeçalho */}
+        {/* cabeçalho */}
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <div className="flex items-center gap-2">
-            <img src={coracao} alt="Logo" className="w-8 h-8"/>
+            <img src={coracao} alt="Logo" className="w-8 h-8" />
             <div>
               <h1 className="font-bold text-lg">Whatslab</h1>
               <span className="text-sm text-gray-500">MVP Inicial</span>
@@ -69,7 +77,7 @@ function App() {
           </button>
         </div>
 
-        {/* Área de mensagens */}
+        {/* mensagens */}
         <div className="flex-1 p-4 space-y-4 overflow-y-auto">
           {mensagens.map((msg, i) => (
             <div key={i} className="flex items-start gap-2">
@@ -87,36 +95,41 @@ function App() {
           ))}
         </div>
 
-        {/* Campo de envio */}
-        <div className="flex border-t px-4 py-3 items-center gap-2">
-          <select
-            className="border rounded px-2 py-1"
-            value={usuarioSelecionado}
-            onChange={(e) => setUsuarioSelecionado(e.target.value)}
-          >
-            <option value="">Selecione usuário</option>
-            {usuarios.map((u, i) => (
-              <option key={i} value={u}>{u}</option>
-            ))}
-          </select>
-          <input
-            type="text"
-            placeholder="Digite sua mensagem aqui..."
-            className="flex-1 border rounded px-2 py-1"
-            value={mensagem}
-            onChange={(e) => setMensagem(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && enviarMensagem()}
-          />
-          <button
-            className="bg-purple-500 text-white px-4 py-1 rounded hover:bg-purple-600"
-            onClick={enviarMensagem}
-          >
-            Enviar
-          </button>
+        {/* área de envio */}
+        <div className="flex flex-col border-t px-4 py-3 gap-2">
+          <div className="flex items-center gap-2">
+            <select
+              className="border rounded px-2 py-1"
+              value={usuarioSelecionado}
+              onChange={(e) => setUsuarioSelecionado(e.target.value)}
+            >
+              <option value="">Selecione usuário</option>
+              {usuarios.map((u, i) => (
+                <option key={i} value={u}>{u}</option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="Digite sua mensagem aqui..."
+              className="flex-1 border rounded px-2 py-1"
+              value={mensagem}
+              onChange={(e) => setMensagem(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && enviarMensagem()}
+            />
+            <button
+              className="bg-purple-500 text-white px-4 py-1 rounded hover:bg-purple-600"
+              onClick={enviarMensagem}
+            >
+              Enviar
+            </button>
+          </div>
+
+          {/* mensagem de erro */}
+          {erro && <div className="text-red-500 text-sm">{erro}</div>}
         </div>
       </div>
 
-      {/* Modal */}
+      {/* modal */}
       {modalAberto && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 w-80 shadow-lg">
