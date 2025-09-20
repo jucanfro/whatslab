@@ -14,7 +14,7 @@ function App() {
   const [mensagem, setMensagem] = useState("");
   const [mensagens, setMensagens] = useState([]);
   const [coresUsuarios, setCoresUsuarios] = useState({});
-  const [erro, setErro] = useState(""); // <- estado de erro
+  const [erro, setErro] = useState("");
 
   const abrirModal = () => setModalAberto(true);
   const fecharModal = () => {
@@ -53,53 +53,53 @@ function App() {
       { usuario: usuarioSelecionado, texto: mensagem.trim(), hora }
     ]);
     setMensagem("");
-    setErro(""); // limpar erro
+    setErro("");
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w bg-white shadow-lg rounded-lg flex flex-col h-[80vh]">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-2 sm:p-4">
+      <div className="w-full max-w-md sm:max-w-2xl bg-white shadow-lg rounded-lg flex flex-col h-[90vh]">
 
         {/* cabeçalho */}
-        <div className="flex items-center justify-between px-4 py-3 border-b">
+        <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 border-b">
           <div className="flex items-center gap-2">
-            <img src={coracao} alt="Logo" className="w-8 h-8" />
+            <img src={coracao} alt="Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
             <div>
-              <h1 className="font-bold text-lg">Whatslab</h1>
-              <span className="text-sm text-gray-500">MVP Inicial</span>
+              <h1 className="font-bold text-base sm:text-lg">Whatslab</h1>
+              <span className="text-xs sm:text-sm text-gray-500">MVP Inicial</span>
             </div>
           </div>
           <button
-            className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600"
+            className="bg-green-500 text-white text-xs sm:text-sm px-2 sm:px-4 py-1 rounded hover:bg-green-600"
             onClick={abrirModal}
           >
-            + Adicionar Usuário
+            + Usuário
           </button>
         </div>
 
         {/* mensagens */}
-        <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+        <div className="flex-1 p-3 sm:p-4 space-y-3 overflow-y-auto">
           {mensagens.map((msg, i) => (
             <div key={i} className="flex items-start gap-2">
-              <div className={`w-8 h-8 ${coresUsuarios[msg.usuario]} text-white flex items-center justify-center rounded-full font-bold`}>
+              <div className={`w-7 h-7 sm:w-8 sm:h-8 ${coresUsuarios[msg.usuario]} text-white flex items-center justify-center rounded-full font-bold text-xs sm:text-sm`}>
                 {msg.usuario.charAt(0).toUpperCase()}
               </div>
               <div>
-                <div className="text-sm font-semibold">{msg.usuario}</div>
-                <div className="bg-gray-100 p-3 rounded-lg max-w-xs">
+                <div className="text-xs sm:text-sm font-semibold">{msg.usuario}</div>
+                <div className=" p-2 sm:p-3 rounded-lg max-w-[70%] sm:max-w-xs text-sm sm:text-base">
                   {msg.texto}
                 </div>
-                <div className="text-xs text-gray-400 text-right">{msg.hora}</div>
+                <div className="text-[10px] sm:text-xs text-gray-400 text-right">{msg.hora}</div>
               </div>
             </div>
           ))}
         </div>
 
         {/* área de envio */}
-        <div className="flex flex-col border-t px-4 py-3 gap-2">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col border-t px-3 sm:px-4 py-2 sm:py-3 gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <select
-              className="border rounded px-2 py-1"
+              className="border rounded px-2 py-1 text-sm"
               value={usuarioSelecionado}
               onChange={(e) => setUsuarioSelecionado(e.target.value)}
             >
@@ -108,48 +108,49 @@ function App() {
                 <option key={i} value={u}>{u}</option>
               ))}
             </select>
-            <input
-              type="text"
-              placeholder="Digite sua mensagem aqui..."
-              className="flex-1 border rounded px-2 py-1"
-              value={mensagem}
-              onChange={(e) => setMensagem(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && enviarMensagem()}
-            />
-            <button
-              className="bg-purple-500 text-white px-4 py-1 rounded hover:bg-purple-600"
-              onClick={enviarMensagem}
-            >
-              Enviar
-            </button>
+            <div className="flex gap-2 flex-1">
+              <input
+                type="text"
+                placeholder="Mensagem..."
+                className="flex-1 border rounded px-2 py-1 text-sm"
+                value={mensagem}
+                onChange={(e) => setMensagem(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && enviarMensagem()}
+              />
+              <button
+                className="bg-purple-500 text-white text-sm px-3 sm:px-4 py-1 rounded hover:bg-purple-600"
+                onClick={enviarMensagem}
+              >
+                Enviar
+              </button>
+            </div>
           </div>
 
-          {/* mensagem de erro */}
-          {erro && <div className="text-red-500 text-sm">{erro}</div>}
+          {erro && <div className="text-red-500 text-xs sm:text-sm">{erro}</div>}
         </div>
       </div>
 
       {/* modal */}
       {modalAberto && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-80 shadow-lg">
-            <h2 className="text-lg font-bold mb-4">Adicionar Usuário</h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-3">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-sm shadow-lg">
+            <h2 className="text-base sm:text-lg font-bold mb-3">Adicionar Usuário</h2>
             <input
               type="text"
               placeholder="Digite o nome do usuário"
-              className="w-full border rounded px-3 py-2 mb-4"
+              className="w-full border rounded px-3 py-2 mb-3 text-sm"
               value={novoUsuario}
               onChange={(e) => setNovoUsuario(e.target.value)}
             />
             <div className="flex justify-end gap-2">
               <button
-                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                className="bg-gray-300 text-sm px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-gray-400"
                 onClick={fecharModal}
               >
                 Fechar
               </button>
               <button
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                className="bg-green-500 text-white text-sm px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-green-600"
                 onClick={adicionarUsuario}
               >
                 Adicionar
